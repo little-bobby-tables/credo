@@ -3,10 +3,12 @@ defmodule Credo.Check.FindLintAttributes do
   """
   @explanation nil
 
-  use Credo.Check, run_on_all: true, base_priority: :high
+  use Credo.Check, base_priority: :high
 
   alias Credo.Check.CodeHelper
   alias Credo.Check.LintAttribute
+
+  def run_on_all?(_params), do: true
 
   @doc false
   def run(source_files, _exec, _params) when is_list(source_files) do

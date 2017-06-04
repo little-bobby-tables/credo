@@ -26,7 +26,9 @@ defmodule Credo.Check.Consistency.SpaceAroundOperators do
   alias Credo.Check.Consistency.Helper
   alias Credo.Check.PropertyValue
 
-  use Credo.Check, run_on_all: true, base_priority: :high
+  use Credo.Check, base_priority: :high
+
+  def run_on_all?(_params), do: true
 
   # TODO: add *ignored* operators, so you can add "|" and still write
   #       [head|tail] while enforcing 2 + 3 / 1 ...

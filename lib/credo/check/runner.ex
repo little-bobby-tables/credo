@@ -179,6 +179,6 @@ defmodule Credo.Check.Runner do
     UI.warn("Error while running #{check}")
   end
 
-  defp run_on_all_check?({check}), do: check.run_on_all?
-  defp run_on_all_check?({check, _params}), do: check.run_on_all?
+  defp run_on_all_check?({check}), do: check.run_on_all?([])
+  defp run_on_all_check?({check, params}), do: check.run_on_all?(params)
 end

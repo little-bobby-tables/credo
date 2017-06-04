@@ -106,7 +106,7 @@ defmodule CredoCheckCase do
   defp issues_for(source_files, check, _exec, params) when is_list(source_files) do
     exec = create_config()
 
-    if check.run_on_all? do
+    if check.run_on_all?(params) do
       :ok = check.run(source_files, exec, params)
 
       source_files

@@ -41,9 +41,11 @@ defmodule Credo.Check do
         unquote(opts[:elixir_version] || ">= 0.0.1")
       end
 
-      def run_on_all? do
-        unquote(run_on_all_body(opts[:run_on_all]))
+      def run_on_all?(_params) do
+        false
       end
+
+      defoverridable [run_on_all?: 1]
 
       def explanation do
         Check.explanation_for(@explanation, :check)
@@ -102,7 +104,7 @@ defmodule Credo.Check do
 
   #@callback run(source_file :: Credo.SourceFile.t, params :: Keyword.t) :: List.t
 
-  @callback run_on_all?() :: boolean
+  @callback run_on_all?(params :: Keyword.t) :: boolean
 
   @callback explanation() :: String.t
 
@@ -231,7 +233,4 @@ defmodule Credo.Check do
     to_exit_status(@base_category_exit_status_map[atom])
   end
   def to_exit_status(value), do: value
-
-  defp run_on_all_body(true), do: true
-  defp run_on_all_body(_), do: false
 end

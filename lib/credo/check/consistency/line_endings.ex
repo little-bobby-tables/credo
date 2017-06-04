@@ -16,7 +16,9 @@ defmodule Credo.Check.Consistency.LineEndings do
   alias Credo.Check.Consistency.Helper
   alias Credo.Check.PropertyValue
 
-  use Credo.Check, run_on_all: true, base_priority: :high
+  use Credo.Check, base_priority: :high
+
+  def run_on_all?(_params), do: true
 
   @doc false
   def run(source_files, exec, params \\ []) when is_list(source_files) do

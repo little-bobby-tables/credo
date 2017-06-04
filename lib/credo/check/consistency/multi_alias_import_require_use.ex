@@ -26,7 +26,9 @@ defmodule Credo.Check.Consistency.MultiAliasImportRequireUse do
 
   alias Credo.Check.Consistency.Helper
 
-  use Credo.Check, run_on_all: true, base_priority: :high
+  use Credo.Check, base_priority: :high
+
+  def run_on_all?(_params), do: true
 
   @doc false
   def run(source_files, exec, params \\ []) when is_list(source_files) do
