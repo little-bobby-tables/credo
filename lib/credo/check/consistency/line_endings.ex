@@ -15,18 +15,34 @@ defmodule Credo.Check.Consistency.LineEndings do
 
   alias Credo.Check.Consistency.Helper
   alias Credo.Check.PropertyValue
+  alias Credo.IssueMeta
 
   use Credo.Check, base_priority: :high
 
-  def run_on_all?(_params), do: true
+  def run_on_all?(params), do: not (params[:enforced] in @code_patterns)
 
   @doc false
-  def run(source_files, exec, params \\ []) when is_list(source_files) do
+  def run(source_files, exec, params) when is_list(source_files) do
     source_files
     |> Helper.run_code_patterns(@code_patterns, params)
     |> Helper.append_issues_via_issue_service(&issue_for/5, params, exec)
 
     :ok
+  end
+  def run(source_file, params) do
+    enforced_style = params[:enforced]
+    issue_meta = IssueMeta.for(source_file, params)
+
+    issues =
+      @code_patterns
+      |> List.delete(enforced_style)
+      |> Enum.flat_map(&(&1.property_value_for(source_file, params)))
+      |> Enum.reject(&is_nil/1)
+      |> Enum.map(&issue_for(&1, enforced_style, issue_meta))
+
+    issues
+    |> List.first
+    |> List.wrap
   end
 
   defp issue_for(_issue_meta, _actual_props, nil, _picked_count, _total_count), do: nil
@@ -36,5 +52,12 @@ defmodule Credo.Check.Consistency.LineEndings do
 
     format_issue issue_meta,
       message: "File is using #{actual_prop} line endings while most of the files use #{expected_prop} line endings."
+  end
+  defp issue_for(forbidden_prop, expected_prop, issue_meta) do
+    forbidden_value = PropertyValue.get(forbidden_prop)
+    expected_value = expected_prop.property_value()
+
+    format_issue issue_meta,
+      message: "File is using #{forbidden_value} line endings while the enforced style is #{expected_value} line endings."
   end
 end
